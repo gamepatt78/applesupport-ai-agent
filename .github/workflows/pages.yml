@@ -31,9 +31,13 @@ jobs:
         run: |
           mkdir -p site
           cp templates/support.html site/index.html
+          cp templates/index.html site/agent.html
           cp static/support.css site/support.css
           cp static/support.js site/support.js
-          sed -i 's#/static/support.css#support.css#g; s#/static/support.js#support.js#g; s#href="/support"#href="./"#g; s#href="/"#href="./"#g' site/index.html
+          cp static/styles.css site/styles.css
+          cp static/app.js site/app.js
+          sed -i 's#/static/support.css#support.css#g; s#/static/support.js#support.js#g; s#href="/support"#href="./"#g; s#href="/"#href="./agent.html"#g' site/index.html
+          sed -i 's#/static/styles.css#styles.css#g; s#/static/app.js#app.js#g; s#href="/support"#href="./"#g' site/agent.html
 
       - name: Upload website
         uses: actions/upload-pages-artifact@v3
