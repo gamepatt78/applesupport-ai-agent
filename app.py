@@ -4,12 +4,15 @@ from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
 
+from src.agent import AppleSupportAgent
 from src.database import get_metrics, list_escalations, list_interactions, save_interaction
 from src.pipeline import classify_baseline, escalation_baseline
 
 
 ROOT = Path(__file__).parent
 app = Flask(__name__, template_folder="templates", static_folder="static")
+RETRIEVAL_DATA = ROOT / "data" / "apple_support_sample.csv"
+retrieval_agent = AppleSupportAgent.from_csv(RETRIEVAL_DATA) if RETRIEVAL_DATA.exists() else None
 
 
 @app.after_request
@@ -90,7 +93,11 @@ def analyze():
 
     intent = classify_baseline(message)
     escalate, reason = escalation_baseline(message)
-    reply = draft_reply(intent, escalate)
+    analysis = retrieval_agent.analyze(message) if retrieval_agent else {
+        "reply": draft_reply(intent, escalate),
+        "evidence": [],
+    }
+    reply = analysis["reply"]
     interaction_id = save_interaction(message, intent, escalate, reason, reply)
     return jsonify({
         "id": interaction_id,
@@ -98,6 +105,7 @@ def analyze():
         "escalate": escalate,
         "reason": reason,
         "reply": reply,
+        "evidence": analysis["evidence"],
     })
 
 

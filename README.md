@@ -24,6 +24,8 @@ Reason: high-risk term: hacked
 
 The main implementation files are `app.py` for Flask routes, `src/pipeline.py` for the baseline logic, `src/database.py` for SQLite, `templates/` for HTML, and `static/` for CSS and JavaScript.
 
+Use [LABELING_GUIDE.md](LABELING_GUIDE.md) to label the golden set before running the evaluation harness.
+
 ### Component-by-component flow
 
 #### 1. Customer website
@@ -55,7 +57,7 @@ The same module checks for high-risk terms such as `fraud`, `hacked`, `legal`, `
 
 #### 5. Draft reply
 
-`app.py` selects an AppleSupport-style response for the detected intent. High-risk messages receive a privacy-safe response asking for human review rather than account details or passwords.
+`src/agent.py` retrieves the three most similar historical customer messages with TF-IDF cosine similarity. The best historical AppleSupport reply is included as evidence for the draft. High-risk messages receive a privacy-safe response asking for human review rather than account details or passwords.
 
 #### 6. Database storage
 
@@ -157,3 +159,13 @@ The expected input is the Kaggle Customer Support on Twitter CSV, whose columns 
 3. Add retrieval of similar historical AppleSupport replies.
 4. Add a grounded response generator and escalation policy.
 5. Report macro F1, escalation precision/recall, reply quality, failure cases, and judge-human agreement.
+
+## Evaluation commands
+
+After manually filling `intent` and `escalate` in `data/golden_eval.csv`, run:
+
+```powershell
+python -m src.evaluate --golden data/golden_eval.csv
+```
+
+The harness compares a majority-class intent baseline with TF-IDF plus logistic regression, then reports macro-F1 classification output and escalation precision/recall. It exits before scoring when labels are incomplete so no unsupported headline number is produced.
