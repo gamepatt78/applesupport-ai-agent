@@ -95,3 +95,24 @@ document.querySelector('#edit-reply').addEventListener('click', () => {
 document.querySelector('#approve-reply').addEventListener('click', () => showToast('Reply approved for sending'));
 
 updateCount();
+
+async function loadEscalations() {
+  const response = await fetch('/api/escalations?limit=5');
+  if (!response.ok) return;
+  const data = await response.json();
+  const count = document.querySelector('#queue-count');
+  const container = document.querySelector('#escalation-queue-items');
+  count.textContent = String(data.escalations.length).padStart(2, '0');
+  if (!data.escalations.length) return;
+  const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  }[character]));
+  container.innerHTML = data.escalations.map((item, index) => `
+    <div class="queue-item">
+      <div class="queue-avatar ${['red', 'blue', 'purple'][index % 3]}">${item.intent.slice(0, 2).toUpperCase()}</div>
+      <div><strong>${escapeHtml(item.customer_message.slice(0, 42))}${item.customer_message.length > 42 ? '...' : ''}</strong><span>${escapeHtml(item.escalation_reason)}</span></div>
+      <span class="queue-arrow">→</span>
+    </div>`).join('');
+}
+
+loadEscalations().catch(() => {});

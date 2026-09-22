@@ -78,4 +78,20 @@ def list_interactions(limit: int = 50) -> list[dict]:
     return [dict(row) for row in rows]
 
 
+def list_escalations(limit: int = 20) -> list[dict]:
+    bounded_limit = max(1, min(int(limit), 100))
+    with get_connection() as connection:
+        rows = connection.execute(
+            """
+            SELECT id, customer_message, intent, escalation_reason, created_at
+            FROM support_interactions
+            WHERE escalated = 1
+            ORDER BY id DESC
+            LIMIT ?
+            """,
+            (bounded_limit,),
+        ).fetchall()
+    return [dict(row) for row in rows]
+
+
 initialize_database()
