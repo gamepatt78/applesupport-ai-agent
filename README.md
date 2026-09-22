@@ -4,6 +4,26 @@ This project builds a small, reproducible support-agent prototype for the Hiver 
 
 See [REPORT.md](REPORT.md) for the assignment report, baseline plan, failure analysis, misleading-headline section, and decision log.
 
+## How it works
+
+1. A user enters a customer-support message in the website.
+2. The browser sends it as JSON to `POST /api/analyze`.
+3. Flask classifies the intent and checks for escalation-risk terms.
+4. Flask creates a draft AppleSupport-style reply.
+5. The message, intent, decision, reason, reply, and timestamp are saved in SQLite at `data/support.db`.
+6. The dashboard refreshes `/api/metrics` and `/api/escalations` to show live database results.
+
+Example:
+
+```text
+Input: Someone hacked my Apple account.
+Intent: account_access
+Action: Escalate to human
+Reason: high-risk term: hacked
+```
+
+The main implementation files are `app.py` for Flask routes, `src/pipeline.py` for the baseline logic, `src/database.py` for SQLite, `templates/` for HTML, and `static/` for CSS and JavaScript.
+
 ## Current scope
 
 - Filter the Customer Support on Twitter dataset to `AppleSupport`.
