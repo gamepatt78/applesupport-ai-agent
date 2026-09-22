@@ -10,6 +10,14 @@ import requests
 X_SEARCH_URL = "https://api.x.com/2/tweets/search/recent"
 
 
+class XAPIError(RuntimeError):
+    """Safe, non-secret description of an upstream X API failure."""
+
+    def __init__(self, status_code: int, message: str) -> None:
+        self.status_code = status_code
+        super().__init__(message)
+
+
 def fetch_recent_applesupport_tweets(max_results: int = 10) -> list[dict]:
     token = os.getenv("X_BEARER_TOKEN")
     if not token:
@@ -28,7 +36,13 @@ def fetch_recent_applesupport_tweets(max_results: int = 10) -> list[dict]:
         },
         timeout=20,
     )
-    response.raise_for_status()
+    if not response.ok:
+        try:
+            error_payload = response.json()
+            message = error_payload.get("detail") or error_payload.get("title") or "X API rejected the request"
+        except ValueError:
+            message = "X API rejected the request"
+        raise XAPIError(response.status_code, str(message)[:240])
     payload = response.json()
     users = {user["id"]: user for user in payload.get("includes", {}).get("users", [])}
 
