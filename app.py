@@ -7,7 +7,6 @@ from flask import Flask, jsonify, render_template, request, send_from_directory
 from src.agent import AppleSupportAgent
 from src.database import get_metrics, list_escalations, list_interactions, save_interaction
 from src.pipeline import classify_baseline, escalation_baseline
-from src.twitter_client import XAPIError, fetch_kaggle_applesupport_sample, fetch_recent_applesupport_tweets
 
 
 ROOT = Path(__file__).parent
@@ -83,31 +82,6 @@ def escalations():
 @app.get("/api/metrics")
 def metrics():
     return jsonify(get_metrics())
-
-
-@app.get("/api/live-tweets")
-def live_tweets():
-    limit = request.args.get("limit", default=10, type=int)
-    try:
-        return jsonify({"tweets": fetch_recent_applesupport_tweets(limit)})
-    except XAPIError as error:
-        if error.status_code == 402 and RETRIEVAL_DATA.exists():
-            return jsonify({
-                "source": "historical_kaggle",
-                "notice": "Live X data is unavailable because the X API account has no credits. Showing historical Kaggle AppleSupport examples.",
-                "tweets": fetch_kaggle_applesupport_sample(RETRIEVAL_DATA, limit),
-            })
-        if error.status_code in (401, 403):
-            setup = "Check that the Bearer Token is valid and the X app has Read access to the recent-search endpoint."
-        elif error.status_code == 429:
-            setup = "X API rate limit reached. Wait and try again later."
-        else:
-            setup = "Check the X Developer dashboard and API availability."
-        return jsonify({"error": str(error), "x_status": error.status_code, "setup": setup}), 502
-    except RuntimeError as error:
-        return jsonify({"error": str(error), "setup": "Add X_BEARER_TOKEN to the server environment."}), 503
-    except Exception:
-        return jsonify({"error": "X API request failed"}), 502
 
 
 @app.post("/api/analyze")
