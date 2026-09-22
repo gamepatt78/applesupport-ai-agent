@@ -32,39 +32,35 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2400);
 }
 
-function analyzeMessage() {
+async function analyzeMessage() {
   const text = messageInput.value.trim();
-  const normalized = text.toLowerCase();
-  const intent = intentRules.find((rule) => rule.words.some((word) => normalized.includes(word))) || {
-    name: 'General inquiry',
-    code: 'general_inquiry'
-  };
-  const matchedRisk = escalationTerms.filter((term) => normalized.includes(term));
-  const shouldEscalate = matchedRisk.length > 0;
-
-  intentValue.textContent = intent.name;
-  intentCode.textContent = intent.code;
-  confidenceBadge.textContent = `${text.length > 20 ? (shouldEscalate ? 82 : 87) : 61}% confidence`;
-  actionValue.textContent = shouldEscalate ? 'Escalate to human' : 'Auto-handle';
-  actionReason.textContent = shouldEscalate
-    ? `High-risk term detected: ${matchedRisk.join(', ')}. A specialist should review this case.`
-    : 'Routine support request with no high-risk terms detected.';
-  actionIcon.textContent = shouldEscalate ? '!' : '✓';
-  actionIcon.classList.toggle('escalate', shouldEscalate);
-
-  if (shouldEscalate) {
-    replyValue.textContent = 'Thanks for letting us know. To protect your account, a specialist will review this issue securely. Please do not share passwords, verification codes, or full payment details here.';
-  } else if (intent.code === 'billing_refund') {
-    replyValue.textContent = 'Hi there, we can help review that charge. Please check your purchase history and reply with the date and amount of the duplicate charge. For your security, do not share full payment details here.';
-  } else if (intent.code === 'account_access') {
-    replyValue.textContent = 'Hi there, we can help you regain access. Please visit iforgot.apple.com and follow the account recovery steps. Reply here if you get stuck and we’ll take a closer look.';
-  } else if (intent.code === 'repair_warranty') {
-    replyValue.textContent = 'Hi there, we can help arrange the next step. Please check your coverage at checkcoverage.apple.com, then choose an Apple Store or Apple Authorized Service Provider for an inspection.';
-  } else {
-    replyValue.textContent = 'Hi there, we can help with that. Please check Settings for the relevant device status and make sure your iPhone is updated to the latest iOS version. If the issue continues, reply here and we’ll take a closer look with you.';
+  if (!text) {
+    showToast('Enter a customer message first');
+    return;
   }
+  try {
+    const response = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text })
+    });
+    if (!response.ok) throw new Error('API request failed');
+    const result = await response.json();
+    const shouldEscalate = result.escalate;
 
-  showToast(shouldEscalate ? 'Escalation recommendation updated' : 'Analysis recommendation updated');
+    intentValue.textContent = result.intent.replaceAll('_', ' ');
+    intentCode.textContent = result.intent;
+    confidenceBadge.textContent = `${shouldEscalate ? 82 : 87}% confidence`;
+    actionValue.textContent = shouldEscalate ? 'Escalate to human' : 'Auto-handle';
+    actionReason.textContent = result.reason;
+    actionIcon.textContent = shouldEscalate ? '!' : '✓';
+    actionIcon.classList.toggle('escalate', shouldEscalate);
+    replyValue.textContent = result.reply;
+    await loadEscalations();
+    showToast(shouldEscalate ? 'Saved and added to escalation queue' : 'Saved to interaction history');
+  } catch (error) {
+    showToast('API unavailable. Start Flask with: python app.py');
+  }
 }
 
 messageInput.addEventListener('input', updateCount);
