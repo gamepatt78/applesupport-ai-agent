@@ -12,6 +12,12 @@ ROOT = Path(__file__).parent
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
 
+@app.after_request
+def disable_browser_cache(response):
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    return response
+
+
 def draft_reply(intent: str, escalate: bool) -> str:
     if escalate:
         return (
