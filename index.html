@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AppleSupport AI support operations console">
+  <title>AppleSupport AI Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-lockup">
+        <div class="brand-mark">A</div>
+        <div>
+          <strong>AppleSupport</strong>
+          <span>AI operations</span>
+        </div>
+      </div>
+
+      <nav class="nav-list" aria-label="Primary navigation">
+        <a class="nav-item active" href="#workspace"><span class="nav-icon">◈</span>Inbox</a>
+        <a class="nav-item" href="#evaluation"><span class="nav-icon">◎</span>Evaluation</a>
+        <a class="nav-item" href="#knowledge"><span class="nav-icon">▤</span>Knowledge base</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-dot"></div>
+        <div>
+          <span class="eyebrow">System status</span>
+          <strong>Baseline online</strong>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Support command center / 01</p>
+          <h1>Review incoming support</h1>
+        </div>
+        <div class="topbar-actions">
+          <span class="date-label">Tuesday, September 22, 2026</span>
+          <button class="avatar" aria-label="Open profile menu">GP</button>
+        </div>
+      </header>
+
+      <section class="metrics-row" aria-label="Agent metrics">
+        <article class="metric-card accent-card">
+          <div class="metric-icon">↗</div>
+          <div><span>Handled today</span><strong>184</strong><small>+12.8% from yesterday</small></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-icon neutral">⌁</div>
+          <div><span>Escalation rate</span><strong>18.4%</strong><small>Within target range</small></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-icon neutral">◷</div>
+          <div><span>Avg. response time</span><strong>42 sec</strong><small>Based on 1,206 cases</small></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-icon neutral">✓</div>
+          <div><span>Reply confidence</span><strong>87%</strong><small>Historical evidence match</small></div>
+        </article>
+      </section>
+
+      <section class="workspace-grid">
+        <div class="panel review-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Live review</p>
+              <h2>New customer message</h2>
+            </div>
+            <span class="live-pill"><span></span>Ready</span>
+          </div>
+
+          <div class="message-meta">
+            <div class="customer-avatar">JD</div>
+            <div><strong>Jordan Davis</strong><span>@jordan_davis · just now</span></div>
+            <button class="more-button" aria-label="More message options">•••</button>
+          </div>
+
+          <label class="field-label" for="customer-message">Customer message</label>
+          <textarea id="customer-message" rows="5" placeholder="Paste a customer message here...">My iPhone battery is draining very quickly after the latest iOS update. What can I do?</textarea>
+          <div class="input-footer"><span id="character-count">91 / 500</span><button class="clear-button" id="clear-message">Clear</button></div>
+
+          <div class="suggestion-row">
+            <span>Try an example</span>
+            <button class="suggestion" data-message="I was charged twice for my iCloud subscription and need a refund.">Billing issue</button>
+            <button class="suggestion" data-message="My Apple ID is locked and I cannot log in to my account.">Account access</button>
+            <button class="suggestion" data-message="My iPhone screen is broken. How do I arrange a repair?"><span>Repair request</span></button>
+          </div>
+
+          <button class="analyze-button" id="analyze-button"><span>Analyze message</span><span class="button-arrow">→</span></button>
+        </div>
+
+        <div class="panel result-panel" id="analysis-result" aria-live="polite">
+          <div class="panel-heading">
+            <div><p class="eyebrow">Agent recommendation</p><h2>Analysis result</h2></div>
+            <span class="confidence-badge" id="confidence-badge">87% confidence</span>
+          </div>
+
+          <div class="result-section">
+            <span class="result-label">Detected intent</span>
+            <div class="intent-result"><span class="intent-dot"></span><strong id="intent-value">Software troubleshooting</strong><span class="intent-code" id="intent-code">software_troubleshooting</span></div>
+          </div>
+
+          <div class="result-section">
+            <span class="result-label">Recommended action</span>
+            <div class="action-result"><div class="action-icon" id="action-icon">✓</div><div><strong id="action-value">Auto-handle</strong><span id="action-reason">Routine troubleshooting with no high-risk terms detected.</span></div></div>
+          </div>
+
+          <div class="result-section reply-section">
+            <div class="reply-heading"><span class="result-label">Draft reply</span><button id="copy-reply" class="copy-button">Copy reply</button></div>
+            <div class="reply-box" id="reply-value">Hi Jordan, we can help with that. Please check Settings &gt; Battery to see which apps are using the most power, then make sure your iPhone is updated to the latest iOS version. If the issue continues, reply here and we’ll take a closer look with you.</div>
+            <div class="evidence-line"><span class="evidence-icon">⌕</span> Grounded in 12 similar AppleSupport replies</div>
+          </div>
+
+          <div class="result-actions"><button class="secondary-button" id="edit-reply">Edit draft</button><button class="primary-button" id="approve-reply">Approve &amp; send</button></div>
+        </div>
+      </section>
+
+      <section class="bottom-grid" id="evaluation">
+        <div class="panel trend-panel">
+          <div class="panel-heading compact"><div><p class="eyebrow">Performance snapshot</p><h2>Agent quality</h2></div><button class="period-button">Last 7 days⌄</button></div>
+          <div class="chart-wrap"><div class="y-axis"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><div class="chart"><div class="gridline"></div><div class="gridline"></div><div class="gridline"></div><div class="gridline"></div><svg viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Agent quality trend"><defs><linearGradient id="chart-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f4a261" stop-opacity=".3"/><stop offset="100%" stop-color="#f4a261" stop-opacity="0"/></linearGradient></defs><path class="chart-area" d="M0,132 C45,125 60,142 105,111 S165,94 208,106 S260,83 302,91 S360,54 405,68 S460,40 505,51 S555,30 600,22 L600,180 L0,180 Z"/><path class="chart-line" d="M0,132 C45,125 60,142 105,111 S165,94 208,106 S260,83 302,91 S360,54 405,68 S460,40 505,51 S555,30 600,22"/></svg><div class="x-axis"><span>Sep 16</span><span>Sep 18</span><span>Sep 20</span><span>Sep 22</span></div></div></div>
+          <div class="chart-legend"><span><i class="legend-dot orange"></i>Reply quality <strong>87%</strong></span><span><i class="legend-dot blue"></i>Intent accuracy <strong>91%</strong></span></div>
+        </div>
+        <div class="panel queue-panel" id="knowledge">
+          <div class="panel-heading compact"><div><p class="eyebrow">Needs attention</p><h2>Escalation queue</h2></div><span class="queue-count">04</span></div>
+          <div class="queue-item"><div class="queue-avatar red">MK</div><div><strong>Suspicious account activity</strong><span>Security concern · 2 min ago</span></div><span class="queue-arrow">→</span></div>
+          <div class="queue-item"><div class="queue-avatar blue">RS</div><div><strong>Unexpected subscription charge</strong><span>Billing issue · 8 min ago</span></div><span class="queue-arrow">→</span></div>
+          <div class="queue-item"><div class="queue-avatar purple">AL</div><div><strong>Device replacement request</strong><span>Warranty support · 14 min ago</span></div><span class="queue-arrow">→</span></div>
+        </div>
+      </section>
+      <footer>AppleSupport AI Agent <span>·</span> Baseline evaluation workspace <span>·</span> v0.1</footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

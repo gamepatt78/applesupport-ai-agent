@@ -24,6 +24,26 @@ The command writes:
 - `data/apple_support_sample.csv`: AppleSupport inbound messages paired with historical replies where available.
 - `data/golden_eval.csv`: 200 stratified-by-availability examples with blank labels for manual annotation.
 
+## Run the app
+
+Install dependencies and start the Flask website:
+
+```powershell
+pip install -r requirements.txt
+python app.py
+```
+
+Open `http://127.0.0.1:5000`. The app provides message classification, escalation recommendations, and draft replies through the Flask API.
+
+## Deploy with CI/CD
+
+This repository includes [render.yaml](render.yaml) and a GitHub Actions workflow at [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
+
+1. Create a Render Web Service from this GitHub repository.
+2. In Render, create a deploy hook for the service.
+3. Add the hook URL in GitHub under `Settings > Secrets and variables > Actions` as `RENDER_DEPLOY_HOOK_URL`.
+4. Push to `main`. GitHub Actions will install dependencies, validate the Python files, and trigger the Render deployment.
+
 For each golden example, fill in `intent`, `escalate`, and `label_notes`. Keep the original text and IDs unchanged.
 
 ## Suggested intent labels
