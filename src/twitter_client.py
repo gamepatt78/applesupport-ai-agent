@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
+import pandas as pd
 import requests
 
 
@@ -16,6 +18,26 @@ class XAPIError(RuntimeError):
     def __init__(self, status_code: int, message: str) -> None:
         self.status_code = status_code
         super().__init__(message)
+
+
+def fetch_kaggle_applesupport_sample(path: Path, max_results: int = 10) -> list[dict]:
+    """Return historical AppleSupport examples when live X data is unavailable."""
+    frame = pd.read_csv(
+        path,
+        usecols=["tweet_id", "customer_text", "created_at", "historical_reply"],
+        nrows=10000,
+    ).dropna(subset=["customer_text"])
+    sample = frame.head(max(1, min(int(max_results), 100)))
+    return [
+        {
+            "id": str(row.tweet_id),
+            "text": str(row.customer_text),
+            "created_at": str(row.created_at),
+            "historical_reply": str(row.historical_reply),
+            "source": "historical_kaggle",
+        }
+        for row in sample.itertuples()
+    ]
 
 
 def fetch_recent_applesupport_tweets(max_results: int = 10) -> list[dict]:

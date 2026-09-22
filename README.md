@@ -127,6 +127,8 @@ GET /api/live-tweets?limit=10
 
 The endpoint searches recent English posts mentioning `@AppleSupport` or addressed to AppleSupport, excludes retweets, and returns tweet text, author, timestamp, conversation ID, and public metrics. Do not put the token in GitHub, the README, or browser JavaScript.
 
+If the X account has no credits or the live request returns status `402`, the endpoint falls back to the included historical Kaggle AppleSupport sample and marks the response with `source: historical_kaggle`. This keeps the demo and assignment workflow usable without pretending historical records are live posts.
+
 The local database is created automatically at `data/support.db`. It is ignored by Git because it contains runtime data. SQLite is suitable for this prototype; a managed PostgreSQL database is recommended for durable multi-instance production storage.
 
 ## Rebuild the data slice
