@@ -145,6 +145,7 @@ async function loadMetrics() {
   document.querySelector('#metric-escalation').textContent = `${metrics.escalation_rate}%`;
   document.querySelector('#metric-escalated').textContent = `${metrics.escalated_today} escalations today`;
   document.querySelector('#metric-confidence').textContent = `${metrics.baseline_confidence}%`;
+  document.querySelector('#metric-database-detail').textContent = `${metrics.database || 'Database'} interaction store`;
 }
 
 loadEscalations().catch(() => {});
