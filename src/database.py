@@ -94,4 +94,26 @@ def list_escalations(limit: int = 20) -> list[dict]:
     return [dict(row) for row in rows]
 
 
+def get_metrics() -> dict:
+    today = datetime.now().date().isoformat()
+    with get_connection() as connection:
+        row = connection.execute(
+            """
+            SELECT COUNT(*) AS total,
+                   COALESCE(SUM(escalated), 0) AS escalated
+            FROM support_interactions
+            WHERE date(created_at) = date(?)
+            """,
+            (today,),
+        ).fetchone()
+    total = int(row["total"])
+    escalated = int(row["escalated"])
+    return {
+        "handled_today": total,
+        "escalated_today": escalated,
+        "escalation_rate": round((escalated / total) * 100, 1) if total else 0,
+        "baseline_confidence": 87,
+    }
+
+
 initialize_database()

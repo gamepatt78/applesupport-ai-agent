@@ -111,4 +111,15 @@ async function loadEscalations() {
     </div>`).join('');
 }
 
+async function loadMetrics() {
+  const response = await fetch('/api/metrics');
+  if (!response.ok) return;
+  const metrics = await response.json();
+  document.querySelector('#metric-handled').textContent = metrics.handled_today;
+  document.querySelector('#metric-escalation').textContent = `${metrics.escalation_rate}%`;
+  document.querySelector('#metric-escalated').textContent = `${metrics.escalated_today} escalations today`;
+  document.querySelector('#metric-confidence').textContent = `${metrics.baseline_confidence}%`;
+}
+
 loadEscalations().catch(() => {});
+loadMetrics().catch(() => {});
