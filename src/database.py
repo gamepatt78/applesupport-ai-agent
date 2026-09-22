@@ -100,6 +100,24 @@ def save_interaction(
         return int(cursor.lastrowid)
 
 
+def update_interaction(
+    interaction_id: int,
+    intent: str,
+    escalated: bool,
+    escalation_reason: str,
+    draft_reply: str,
+) -> None:
+    placeholder = _placeholder()
+    with get_connection() as connection:
+        connection.execute(
+            f"""UPDATE support_interactions
+            SET intent = {placeholder}, escalated = {placeholder},
+                escalation_reason = {placeholder}, draft_reply = {placeholder}
+            WHERE id = {placeholder}""",
+            (intent, escalated, escalation_reason, draft_reply, interaction_id),
+        )
+
+
 def list_interactions(limit: int = 50) -> list[dict]:
     bounded_limit = max(1, min(int(limit), 200))
     with get_connection() as connection:

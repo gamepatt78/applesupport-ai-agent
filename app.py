@@ -5,7 +5,7 @@ from pathlib import Path
 from flask import Flask, jsonify, render_template, request, send_from_directory
 
 from src.agent import AppleSupportAgent
-from src.database import get_metrics, list_escalations, list_interactions, save_interaction
+from src.database import get_metrics, list_escalations, list_interactions, save_interaction, update_interaction
 from src.pipeline import classify_baseline, escalation_baseline
 
 
@@ -37,6 +37,17 @@ def draft_reply(intent: str, escalate: bool) -> str:
         "software_troubleshooting": "Hi there, please check Settings for the relevant device status and make sure your iPhone is updated to the latest iOS version. If the issue continues, reply here and we will take a closer look.",
     }
     return replies.get(intent, "Hi there, thanks for reaching out. Please share a little more detail about the issue and we will help with the next step.")
+
+
+def repair_saved_interactions() -> None:
+    """Refresh legacy rows after classifier or escalation-policy changes."""
+    try:
+        for item in list_interactions(200):
+            intent = classify_baseline(item["customer_message"])
+            escalate, reason = escalation_baseline(item["customer_message"])
+            update_interaction(item["id"], intent, escalate, reason, draft_reply(intent, escalate))
+    except Exception:
+        pass
 
 
 @app.get("/")
@@ -77,6 +88,9 @@ def questions():
 @app.get("/data/<path:filename>")
 def data_file(filename):
     return send_from_directory(ROOT / "data", filename, as_attachment=True)
+
+
+repair_saved_interactions()
 
 
 @app.get("/api/analyze")
