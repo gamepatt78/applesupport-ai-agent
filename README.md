@@ -15,7 +15,7 @@ A reproducible customer-support agent built for the Hiver SDE take-home assignme
 3. Checks for high-risk signals such as fraud, hacking, legal threats, stolen devices, and chargebacks.
 4. Retrieves three similar historical AppleSupport conversations using TF-IDF cosine similarity.
 5. Produces a reply grounded in the best historical response, or a privacy-safe escalation message.
-6. Stores the message, decision, reason, reply, evidence, and timestamp in SQLite.
+6. Stores the message, decision, reason, reply, evidence, and timestamp in Render PostgreSQL in production, with SQLite as the local fallback.
 
 Example:
 
@@ -37,7 +37,7 @@ Flask website and API
       +--> Intent and escalation baseline
       +--> TF-IDF historical-reply retrieval
       +--> Grounded response generator
-      +--> SQLite interaction log
+      +--> PostgreSQL interaction log (SQLite locally)
       |
       v
 Dashboard metrics and escalation queue
@@ -48,7 +48,7 @@ Dashboard metrics and escalation queue
 - `app.py`: Flask routes, API orchestration, response generation, and public entry point.
 - `src/pipeline.py`: transparent intent and escalation baselines.
 - `src/agent.py`: TF-IDF retrieval and grounded response generation.
-- `src/database.py`: SQLite schema and interaction-history queries.
+- `src/database.py`: PostgreSQL/SQLite schema and interaction-history queries.
 - `src/evaluate.py`: majority-class and TF-IDF evaluation harness.
 - `templates/`: dashboard and customer-facing HTML.
 - `static/`: CSS and browser JavaScript.
@@ -79,6 +79,12 @@ Open the customer support page:
 
 ```text
 http://127.0.0.1:5000/support
+```
+
+Open the read-only database viewer:
+
+```text
+http://127.0.0.1:5000/database
 ```
 
 On Windows, `python app.py` is the simplest local start command. Render uses `gunicorn app:app` in production.
@@ -116,6 +122,8 @@ GET /api/history?limit=20
 GET /api/escalations?limit=20
 GET /api/metrics
 ```
+
+The same data is available in a readable browser view at `/database`.
 
 The app uses Render PostgreSQL when the server environment contains `DATABASE_URL`. Without that variable, local development falls back to `data/support.db` using SQLite. The local database is ignored by Git because it contains runtime data.
 
@@ -174,14 +182,20 @@ For reply quality, use [JUDGE_RUBRIC.md](JUDGE_RUBRIC.md) to score correctness, 
 
 ## Deployment
 
-The Flask application is deployed on Render as a Web Service:
+The Flask application is deployed on Render as a Web Service with PostgreSQL persistence:
 
 ```text
 Build command: pip install -r requirements.txt
 Start command: gunicorn app:app
 ```
 
-GitHub Actions validates the Python code and can trigger an optional Render deploy hook. GitHub Pages can host a static customer-page artifact, but it cannot run Flask, the API, or SQLite.
+Render environment variable:
+
+```text
+DATABASE_URL=<Render PostgreSQL Internal Database URL>
+```
+
+GitHub Actions validates the Python code and can trigger an optional Render deploy hook. GitHub Pages can host a static customer-page artifact, but it cannot run Flask, the API, or the database.
 
 ## Scope and limitations
 

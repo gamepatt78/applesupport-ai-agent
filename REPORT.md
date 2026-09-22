@@ -11,7 +11,7 @@ For this prototype, "good" means:
 - high-risk cases are routed to a person with an explicit reason;
 - every prediction can be inspected and reproduced locally.
 
-The scope is intentionally narrow: one brand, a 2,000-example development slice, nine intent labels, SQLite interaction logging, and a Flask interface. I chose not to build a production authentication system, automatic outbound messaging, payments, a fine-tuned language model, or a fully autonomous agent. The prototype does not claim to contact Apple or resolve an account itself.
+The scope is intentionally narrow: one brand, a 2,000-example development slice, nine intent labels, PostgreSQL interaction logging, and a Flask interface. I chose not to build a production authentication system, automatic outbound messaging, payments, a fine-tuned language model, or a fully autonomous agent. The prototype does not claim to contact Apple or resolve an account itself.
 
 ## 2. Data and pipeline
 
@@ -20,10 +20,10 @@ The source is the Customer Support on Twitter dataset supplied for the assignmen
 The pipeline is:
 
 ```text
-customer message -> intent baseline -> escalation baseline -> draft reply -> SQLite log
+customer message -> intent baseline -> escalation baseline -> draft reply -> PostgreSQL log
 ```
 
-The Flask app exposes `POST /api/analyze`, `GET /api/history`, `GET /api/escalations`, and `GET /api/metrics`.
+The Flask app exposes `POST /api/analyze`, `GET /api/history`, `GET /api/escalations`, and `GET /api/metrics`. A separate read-only `/database` page makes the stored records easy to inspect without exposing SQL credentials.
 
 ## 3. Results and baselines
 
@@ -74,7 +74,7 @@ A trustworthy headline should state the sample size, label policy, class distrib
 - Add a confidence threshold that escalates uncertain predictions instead of forcing an intent.
 - Build the reply rubric and measure judge-human agreement.
 - Add PII redaction, structured audit logs, rate limiting, and tests for API/database failures.
-- Deploy the Flask service with a managed database instead of local SQLite for multi-instance production use.
+- Add authentication and role-based access to the database viewer before exposing it to a wider operations team.
 
 ## 7. Decision log
 
@@ -88,7 +88,8 @@ A trustworthy headline should state the sample size, label policy, class distrib
 8. Prepared 200 golden rows because the assignment asks for 150-250 hand-labelled examples.
 9. Kept golden labels blank until a human annotates them, avoiding fabricated evaluation claims.
 10. Used historical AppleSupport replies as evidence rather than presenting generic generated text as brand truth.
-11. Added SQLite logging so predictions, reasons, and timestamps are auditable.
-12. Kept the customer UI separate from the agent dashboard so end-user support and operator review have different workflows.
-13. Excluded the assignment PDF, virtual environment, caches, and local database from Git.
-14. Added GitHub Actions and Render configuration for reproducible deployment, while keeping external credentials out of the repository.
+11. Added database logging so predictions, reasons, and timestamps are auditable; production uses Render PostgreSQL and local development uses SQLite.
+12. Added a read-only database viewer so reviewers can inspect records without direct SQL access.
+13. Kept the customer UI separate from the agent dashboard so end-user support and operator review have different workflows.
+14. Excluded the assignment PDF, virtual environment, caches, and local database from Git.
+15. Added GitHub Actions and Render configuration for reproducible deployment, while keeping database credentials out of the repository.
