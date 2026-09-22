@@ -4,6 +4,7 @@ from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request
 
+from src.database import list_interactions, save_interaction
 from src.pipeline import classify_baseline, escalation_baseline
 
 
@@ -47,6 +48,12 @@ def analyze_help():
     })
 
 
+@app.get("/api/history")
+def history():
+    limit = request.args.get("limit", default=50, type=int)
+    return jsonify({"interactions": list_interactions(limit)})
+
+
 @app.post("/api/analyze")
 def analyze():
     payload = request.get_json(silent=True) or {}
@@ -56,11 +63,14 @@ def analyze():
 
     intent = classify_baseline(message)
     escalate, reason = escalation_baseline(message)
+    reply = draft_reply(intent, escalate)
+    interaction_id = save_interaction(message, intent, escalate, reason, reply)
     return jsonify({
+        "id": interaction_id,
         "intent": intent,
         "escalate": escalate,
         "reason": reason,
-        "reply": draft_reply(intent, escalate),
+        "reply": reply,
     })
 
 

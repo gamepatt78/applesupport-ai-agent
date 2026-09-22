@@ -35,6 +35,10 @@ python app.py
 
 Open `http://127.0.0.1:5000`. The app provides message classification, escalation recommendations, and draft replies through the Flask API.
 
+## Database
+
+The Flask app automatically creates a local SQLite database at `data/support.db`. Every successful `/api/analyze` request stores the customer message, intent, escalation decision, reason, draft reply, and UTC timestamp. View recent records with `GET /api/history?limit=20`.
+
 ## Deploy with CI/CD
 
 This repository includes [render.yaml](render.yaml) and a GitHub Actions workflow at [.github/workflows/deploy.yml](.github/workflows/deploy.yml).

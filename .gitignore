@@ -3,3 +3,4 @@ __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 Hiver SDE Intern Assignment.pdf
+data/support.db
