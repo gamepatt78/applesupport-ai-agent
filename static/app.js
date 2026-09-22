@@ -8,6 +8,14 @@ const actionIcon = document.querySelector('#action-icon');
 const replyValue = document.querySelector('#reply-value');
 const confidenceBadge = document.querySelector('#confidence-badge');
 const toast = document.querySelector('#toast');
+const customerNames = [
+  ['Maya Chen', '@maya_chen'],
+  ['Alex Morgan', '@alex_morgan'],
+  ['Sofia Patel', '@sofia_patel'],
+  ['Noah Williams', '@noah_williams'],
+  ['Emma Laurent', '@emma_laurent'],
+  ['Liam Carter', '@liam_carter']
+];
 
 const intentRules = [
   { name: 'Account access', code: 'account_access', words: ['password', 'login', 'locked', 'apple id', 'icloud', 'account'] },
@@ -23,6 +31,14 @@ const escalationTerms = ['fraud', 'hacked', 'lawyer', 'lawsuit', 'legal', 'threa
 
 function updateCount() {
   characterCount.textContent = `${messageInput.value.length} / 500`;
+}
+
+function setRandomCustomer() {
+  const [name, handle] = customerNames[Math.floor(Math.random() * customerNames.length)];
+  const initials = name.split(' ').map((part) => part[0]).join('');
+  document.querySelector('#customer-avatar').textContent = initials;
+  document.querySelector('#customer-name').textContent = name;
+  document.querySelector('#customer-handle').textContent = `${handle} · just now`;
 }
 
 function showToast(message) {
@@ -91,6 +107,7 @@ document.querySelector('#edit-reply').addEventListener('click', () => {
 document.querySelector('#approve-reply').addEventListener('click', () => showToast('Reply approved for sending'));
 
 updateCount();
+setRandomCustomer();
 
 async function loadEscalations() {
   const response = await fetch('/api/escalations?limit=5');
