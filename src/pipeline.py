@@ -33,9 +33,13 @@ ESCALATION_TERMS = (
 
 def classify_baseline(text: str) -> str:
     normalized = re.sub(r"\s+", " ", str(text).lower()).strip()
-    for intent, keywords in INTENT_KEYWORDS.items():
-        if any(keyword in normalized for keyword in keywords):
-            return intent
+    scores = {
+        intent: sum(keyword in normalized for keyword in keywords)
+        for intent, keywords in INTENT_KEYWORDS.items()
+    }
+    strongest_intent = max(scores, key=scores.get)
+    if scores[strongest_intent] > 0:
+        return strongest_intent
     return "general_inquiry"
 
 
