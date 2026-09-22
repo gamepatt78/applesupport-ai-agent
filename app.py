@@ -49,6 +49,11 @@ def support():
     return render_template("support.html")
 
 
+@app.get("/database")
+def database_view():
+    return render_template("database.html")
+
+
 @app.get("/questions")
 def questions():
     return send_from_directory(ROOT, "customer_questions.md", as_attachment=False)

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database | AppleSupport AI Agent</title>
+  <link rel="stylesheet" href="/static/database.css">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/">AppleSupport <span>AI Agent</span></a><nav><a href="/">Dashboard</a><a href="/support">Customer view</a></nav></header>
+  <main>
+    <div class="page-heading"><div><p class="eyebrow">Read-only data view</p><h1>Interaction database</h1><p class="subheading">A clear view of messages saved by the support agent.</p></div><button id="refresh" class="refresh-button">Refresh data ↻</button></div>
+    <section class="stats" aria-label="Database metrics"><article><span>Database</span><strong id="database-name">Loading...</strong></article><article><span>Analyzed today</span><strong id="handled-count">0</strong></article><article><span>Escalations today</span><strong id="escalated-count">0</strong></article><article><span>Escalation rate</span><strong id="escalation-rate">0%</strong></article></section>
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow">Stored records</p><h2>Support interactions</h2></div><span id="record-count" class="record-count">0 records</span></div><div id="table-state" class="table-state">Loading database records...</div><div class="table-scroll"><table id="records-table" hidden><thead><tr><th>ID</th><th>Customer message</th><th>Intent</th><th>Decision</th><th>Reason</th><th>Created</th></tr></thead><tbody id="records-body"></tbody></table></div></section>
+    <p class="privacy-note">Read-only view. Credentials and raw database access are never exposed here.</p>
+  </main>
+  <script src="/static/database.js"></script>
+</body>
+</html>
