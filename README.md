@@ -2,6 +2,8 @@
 
 This project builds a small, reproducible support-agent prototype for the Hiver SDE take-home assignment.
 
+See [REPORT.md](REPORT.md) for the assignment report, baseline plan, failure analysis, misleading-headline section, and decision log.
+
 ## Current scope
 
 - Filter the Customer Support on Twitter dataset to `AppleSupport`.
