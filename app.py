@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_from_directory
 
 from src.database import list_interactions, save_interaction
 from src.pipeline import classify_baseline, escalation_baseline
@@ -38,6 +38,16 @@ def home():
 @app.get("/support")
 def support():
     return render_template("support.html")
+
+
+@app.get("/questions")
+def questions():
+    return send_from_directory(ROOT, "customer_questions.md", as_attachment=False)
+
+
+@app.get("/data/<path:filename>")
+def data_file(filename):
+    return send_from_directory(ROOT / "data", filename, as_attachment=True)
 
 
 @app.get("/api/analyze")
