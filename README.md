@@ -117,7 +117,9 @@ GET /api/escalations?limit=20
 GET /api/metrics
 ```
 
-The local database is created automatically at `data/support.db`. It is ignored by Git because it contains runtime data. SQLite is suitable for this prototype; a managed PostgreSQL database is recommended for durable multi-instance production storage.
+The app uses Render PostgreSQL when the server environment contains `DATABASE_URL`. Without that variable, local development falls back to `data/support.db` using SQLite. The local database is ignored by Git because it contains runtime data.
+
+To connect Render PostgreSQL, copy the database's **Internal Database URL** into the web service environment as `DATABASE_URL`, then save and redeploy. Do not commit or share this URL because it contains credentials. After redeployment, `/api/metrics` reports `database: postgresql` and new records appear in the Render database.
 
 ## Rebuild the data slice
 
