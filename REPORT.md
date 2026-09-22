@@ -11,11 +11,11 @@ For this prototype, "good" means:
 - high-risk cases are routed to a person with an explicit reason;
 - every prediction can be inspected and reproduced locally.
 
-The scope is intentionally narrow: one brand, a 2,000-example development slice, nine intent labels, SQLite interaction logging, and a Flask interface. I chose not to build a production authentication system, Twitter integration, automatic outbound messaging, payments, a fine-tuned language model, or a fully autonomous agent. The prototype does not claim to contact Apple or resolve an account itself.
+The scope is intentionally narrow: one brand, a 2,000-example development slice, nine intent labels, SQLite interaction logging, and a Flask interface. I chose not to build a production authentication system, automatic outbound messaging, payments, a fine-tuned language model, or a fully autonomous agent. The prototype does not claim to contact Apple or resolve an account itself.
 
 ## 2. Data and pipeline
 
-The source is the Customer Support on Twitter dataset. AppleSupport replies are identified by `author_id == AppleSupport`; customer messages are linked through the dataset's reply relationships. The current generated slice contains 2,000 linked inbound examples and a 200-row golden-set template. The golden set must be manually labelled before quality metrics are meaningful.
+The source is the Customer Support on Twitter dataset supplied for the assignment. AppleSupport replies are identified by `author_id == AppleSupport`; customer messages are linked through the dataset's reply relationships. The current generated slice contains 2,000 linked inbound examples and a 200-row golden-set template. The golden set must be manually labelled before quality metrics are meaningful.
 
 The pipeline is:
 
@@ -36,6 +36,7 @@ The Flask app exposes `POST /api/analyze`, `GET /api/history`, `GET /api/escalat
 | Development examples with linked historical replies | 2,000 |
 | Golden evaluation examples prepared | 200 |
 | Manually labelled golden examples | 0 / 200 |
+| Retrieved historical replies per analysis | 3 |
 
 The last row is important: classification accuracy, macro-F1, escalation precision/recall, and reply-quality scores are **not reported yet** because the golden labels are still blank. Reporting a score before labelling would be misleading.
 
@@ -45,7 +46,7 @@ Once `data/golden_eval.csv` is labelled, run the same held-out examples through:
 
 1. **Trivial baseline:** always predict the most frequent intent in the training portion; always choose `auto-handle` for escalation.
 2. **Simple baseline:** TF-IDF word and character n-grams with logistic regression for intent; the current transparent risk-term rules for escalation.
-3. **Prototype:** the current keyword intent rules, risk-term escalation rules, and historical-reply retrieval/generation layer as it is implemented.
+3. **Prototype:** the current keyword intent rules, risk-term escalation rules, TF-IDF historical-reply retrieval, and grounded response layer.
 
 Report macro-F1 rather than only accuracy because intent frequencies will be uneven. For escalation, report precision, recall, and a confusion matrix. For replies, use a blinded human rubric covering correctness, grounding, actionability, privacy, and tone. Compare an LLM judge with human labels on at least a sample and report agreement, not just the judge's score.
 
@@ -69,7 +70,7 @@ A trustworthy headline should state the sample size, label policy, class distrib
 
 - Label and adjudicate all 200 golden examples, including a second review for ambiguous and high-risk cases.
 - Add a chronological train/test split to reduce leakage from near-duplicate conversations.
-- Implement TF-IDF and a sentence-embedding retrieval baseline with top-k historical evidence.
+- Compare TF-IDF retrieval with a sentence-embedding retrieval model and measure evidence quality.
 - Add a confidence threshold that escalates uncertain predictions instead of forcing an intent.
 - Build the reply rubric and measure judge-human agreement.
 - Add PII redaction, structured audit logs, rate limiting, and tests for API/database failures.
