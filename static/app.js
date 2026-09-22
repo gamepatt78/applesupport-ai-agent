@@ -8,6 +8,7 @@ const actionIcon = document.querySelector('#action-icon');
 const replyValue = document.querySelector('#reply-value');
 const confidenceBadge = document.querySelector('#confidence-badge');
 const toast = document.querySelector('#toast');
+let analysisInProgress = false;
 const customerNames = [
   ['Maya Chen', '@maya_chen'],
   ['Alex Morgan', '@alex_morgan'],
@@ -50,10 +51,14 @@ function showToast(message) {
 
 async function analyzeMessage() {
   const text = messageInput.value.trim();
-  if (!text) {
+  const analyzeButton = document.querySelector('#analyze-button');
+  if (!text || analysisInProgress) {
     showToast('Enter a customer message first');
     return;
   }
+  analysisInProgress = true;
+  analyzeButton.disabled = true;
+  analyzeButton.querySelector('span').textContent = 'Analyzing...';
   try {
     const response = await fetch('/api/analyze', {
       method: 'POST',
@@ -76,6 +81,10 @@ async function analyzeMessage() {
     showToast(shouldEscalate ? 'Saved and added to escalation queue' : 'Saved to interaction history');
   } catch (error) {
     showToast('API unavailable. Start Flask with: python app.py');
+  } finally {
+    analysisInProgress = false;
+    analyzeButton.disabled = false;
+    analyzeButton.querySelector('span').textContent = 'Analyze message';
   }
 }
 

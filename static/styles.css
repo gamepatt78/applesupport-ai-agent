@@ -75,6 +75,7 @@ textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(238,141
 .suggestion { padding: 7px 9px; color: var(--blue); background: #f1f6f7; border: 0; border-radius: 5px; font-size: 10px; }
 .suggestion:hover { background: #e5eef0; }
 .analyze-button, .primary-button { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 13px 15px; color: #fff; background: var(--ink); border: 0; border-radius: 6px; font-size: 12px; font-weight: 700; transition: .2s ease; }
+.analyze-button:disabled { cursor: wait; opacity: .65; transform: none; }
 .analyze-button:hover, .primary-button:hover { background: var(--orange-dark); transform: translateY(-1px); }
 .button-arrow { color: var(--orange); font-size: 19px; line-height: 10px; }
 .confidence-badge { padding: 7px 10px; }
