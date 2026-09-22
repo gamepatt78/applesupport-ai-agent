@@ -29,7 +29,7 @@ jobs:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
-            echo "RENDER_DEPLOY_HOOK_URL is not configured"
-            exit 1
+            echo "RENDER_DEPLOY_HOOK_URL is not configured; skipping optional Render deployment"
+            exit 0
           fi
           curl --fail --silent --show-error -X POST "$RENDER_DEPLOY_HOOK_URL"

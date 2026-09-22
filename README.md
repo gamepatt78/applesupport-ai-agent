@@ -70,6 +70,8 @@ This repository includes [render.yaml](render.yaml) and a GitHub Actions workflo
 3. Add the hook URL in GitHub under `Settings > Secrets and variables > Actions` as `RENDER_DEPLOY_HOOK_URL`.
 4. Push to `main`. GitHub Actions will install dependencies, validate the Python files, and trigger the Render deployment.
 
+The Render deployment is optional; without the secret, CI passes and reports that deployment was skipped. The GitHub Pages workflow is manual because GitHub Pages must first be enabled under `Settings > Pages > Source: GitHub Actions`.
+
 For each golden example, fill in `intent`, `escalate`, and `label_notes`. Keep the original text and IDs unchanged.
 
 ## Suggested intent labels
