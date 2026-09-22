@@ -55,6 +55,8 @@ class AppleSupportAgent:
     def _grounded_reply(intent: str, escalate: bool, evidence: list[dict]) -> str:
         if escalate:
             return "A specialist should review this securely. Please do not share passwords, verification codes, or full payment details here."
+        if intent == "order_delivery":
+            return "Please check your order status at https://www.apple.com/shop/order/list for the latest tracking details. Reply with your order number if the delivery status has not updated, and we can help with the next step."
         best_reply = evidence[0]["historical_reply"] if evidence else ""
         if best_reply:
             return f"Based on similar AppleSupport cases: {best_reply}"
