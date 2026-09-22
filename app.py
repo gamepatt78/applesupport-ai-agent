@@ -54,6 +54,11 @@ def database_view():
     return render_template("database.html")
 
 
+@app.get("/history")
+def history_view():
+    return render_template("history.html")
+
+
 @app.get("/questions")
 def questions():
     return send_from_directory(ROOT, "customer_questions.md", as_attachment=False)

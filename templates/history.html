@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interaction History | AppleSupport AI Agent</title>
+  <link rel="stylesheet" href="/static/history.css">
+</head>
+<body>
+  <header><a class="brand" href="/">AppleSupport <span>AI Agent</span></a><nav><a href="/">Dashboard</a><a href="/database">Database</a><a href="/support">Customer view</a></nav></header>
+  <main><div class="heading"><div><p class="eyebrow">Audit trail</p><h1>Interaction history</h1><p>Every analyzed message, decision, and generated reply.</p></div><button id="refresh">Refresh ↻</button></div><section class="panel"><div id="state">Loading history...</div><div class="table-wrap"><table id="history" hidden><thead><tr><th>ID</th><th>Customer message</th><th>Intent</th><th>Decision</th><th>Reason</th><th>Draft reply</th><th>Created</th></tr></thead><tbody id="rows"></tbody></table></div></section></main>
+  <script src="/static/history.js"></script>
+</body>
+</html>
