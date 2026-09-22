@@ -1,6 +1,8 @@
 name: Deploy static website to GitHub Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -25,10 +27,18 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Prepare static website
+        run: |
+          mkdir -p site
+          cp templates/support.html site/index.html
+          cp static/support.css site/support.css
+          cp static/support.js site/support.js
+          sed -i 's#/static/support.css#support.css#g; s#/static/support.js#support.js#g; s#href="/support"#href="./"#g; s#href="/"#href="./"#g' site/index.html
+
       - name: Upload website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: site
 
       - name: Deploy to GitHub Pages
         id: deployment
