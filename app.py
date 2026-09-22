@@ -34,6 +34,14 @@ def home():
     return send_from_directory(ROOT, "index.html")
 
 
+@app.get("/api/analyze")
+def analyze_help():
+    return jsonify({
+        "message": "Use POST /api/analyze with JSON containing a message.",
+        "example": {"message": "My Apple ID is locked"},
+    })
+
+
 @app.post("/api/analyze")
 def analyze():
     payload = request.get_json(silent=True) or {}
