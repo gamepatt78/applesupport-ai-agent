@@ -24,6 +24,64 @@ Reason: high-risk term: hacked
 
 The main implementation files are `app.py` for Flask routes, `src/pipeline.py` for the baseline logic, `src/database.py` for SQLite, `templates/` for HTML, and `static/` for CSS and JavaScript.
 
+### Component-by-component flow
+
+#### 1. Customer website
+
+The customer opens `/support` and enters a support question. The page is built with HTML in `templates/support.html`, styling in `static/support.css`, and browser interactions in `static/support.js`.
+
+#### 2. API request
+
+When the customer clicks **Search**, JavaScript sends the message to the Flask API:
+
+```http
+POST /api/analyze
+Content-Type: application/json
+```
+
+Example request:
+
+```json
+{"message":"My Apple ID is locked"}
+```
+
+#### 3. Intent classification
+
+`src/pipeline.py` checks the message against the AppleSupport intent vocabulary. It returns labels such as `account_access`, `billing_refund`, `repair_warranty`, or `software_troubleshooting`. Messages without a matching phrase use `general_inquiry`.
+
+#### 4. Escalation decision
+
+The same module checks for high-risk terms such as `fraud`, `hacked`, `legal`, `stolen`, and `chargeback`. A match produces `escalate: true` and a reason. Otherwise, the request is marked for `auto-handle`.
+
+#### 5. Draft reply
+
+`app.py` selects an AppleSupport-style response for the detected intent. High-risk messages receive a privacy-safe response asking for human review rather than account details or passwords.
+
+#### 6. Database storage
+
+`src/database.py` saves every successful analysis in the SQLite database `data/support.db`. Each row includes the original message, intent, escalation decision, reason, draft reply, and UTC timestamp. The database file is local and excluded from Git.
+
+#### 7. Dashboard updates
+
+The agent dashboard at `/` loads live information from:
+
+- `GET /api/metrics`: today's analyzed count, escalation count, escalation rate, and baseline confidence.
+- `GET /api/escalations`: recent high-risk messages for the Needs attention queue.
+- `GET /api/history`: recent analysis records.
+
+After a new message is analyzed, the dashboard refreshes the queue so an escalation appears immediately.
+
+#### 8. Public deployment
+
+The Flask API is deployed on Render with:
+
+```text
+Build: pip install -r requirements.txt
+Start: gunicorn app:app
+```
+
+The live application is available at `https://applesupport-ai-agent.onrender.com/`. GitHub Pages can host only the static customer page; it cannot run Flask, the API, or SQLite. The GitHub Actions workflows in `.github/workflows/` validate the code and prepare the static Pages deployment.
+
 ## Current scope
 
 - Filter the Customer Support on Twitter dataset to `AppleSupport`.
