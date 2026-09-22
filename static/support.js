@@ -29,19 +29,49 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2400);
 }
 
+function fallbackAnalyze(message) {
+  const text = message.toLowerCase();
+  const rules = [
+    ['account_access', ['password', 'login', 'locked', 'apple id', 'icloud', 'account']],
+    ['billing_refund', ['charge', 'charged', 'billing', 'refund', 'payment', 'subscription']],
+    ['device_setup', ['setup', 'activate', 'activation', 'restore', 'backup', 'transfer']],
+    ['software_troubleshooting', ['ios', 'update', 'app', 'crash', 'bug', 'not working', 'error', 'battery']],
+    ['repair_warranty', ['repair', 'broken', 'screen', 'warranty', 'replacement']],
+    ['order_delivery', ['order', 'ship', 'shipping', 'delivery', 'tracking']],
+    ['store_support', ['store', 'genius', 'appointment', 'visit']]
+  ];
+  const match = rules.find(([, words]) => words.some((word) => text.includes(word)));
+  const intent = match ? match[0] : 'general_inquiry';
+  const risks = ['fraud', 'hacked', 'lawyer', 'lawsuit', 'legal', 'threat', 'stolen', 'chargeback'];
+  const matchedRisk = risks.filter((risk) => text.includes(risk));
+  const escalate = matchedRisk.length > 0;
+  return {
+    intent,
+    escalate,
+    reason: escalate ? `high-risk term: ${matchedRisk.join(', ')}` : 'browser-only guidance; no high-risk term detected',
+    reply: escalate
+      ? 'A specialist should review this securely. Please do not share passwords, verification codes, or full payment details here.'
+      : 'Please check Apple Support for the recommended steps. If the issue continues, visit an Apple Store or contact a specialist.'
+  };
+}
+
 async function analyze(message) {
   if (!message.trim()) {
     input.focus();
     showToast('Tell us what is happening first');
     return;
   }
-  const response = await fetch('/api/analyze', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message })
-  });
-  if (!response.ok) throw new Error('Unable to analyze message');
-  return response.json();
+  try {
+    const response = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
+    if (!response.ok) throw new Error('API unavailable');
+    return response.json();
+  } catch (error) {
+    return fallbackAnalyze(message);
+  }
 }
 
 form.addEventListener('submit', async (event) => {
@@ -75,8 +105,9 @@ form.addEventListener('submit', async (event) => {
     storeLink.textContent = 'Visit an Apple Store ↗';
     resultSection.hidden = false;
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } catch (error) {
-    showToast('The support service is unavailable. Is the app running?');
+    if (result.reason.startsWith('browser-only')) {
+      showToast('Browser guidance shown; database saving requires the Flask app');
+    }
   } finally {
     submit.disabled = false;
     submit.textContent = 'Search';
