@@ -28,6 +28,11 @@ ESCALATION_TERMS = (
     "threat",
     "stolen",
     "chargeback",
+    "unauthorized",
+    "suspicious activity",
+    "using my payment card",
+    "using my card",
+    "do not recognize this charge",
 )
 
 
