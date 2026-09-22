@@ -8,6 +8,23 @@ A reproducible customer-support agent built for the Hiver SDE take-home assignme
 
 **Assignment report:** [REPORT.md](REPORT.md)
 
+## Public URLs
+
+| Resource | URL |
+| --- | --- |
+| Dashboard | https://applesupport-ai-agent.onrender.com/ |
+| Customer support view | https://applesupport-ai-agent.onrender.com/support |
+| Database viewer | https://applesupport-ai-agent.onrender.com/database |
+| Interaction history | https://applesupport-ai-agent.onrender.com/history |
+| Metrics viewer | https://applesupport-ai-agent.onrender.com/metrics |
+| Escalation viewer | https://applesupport-ai-agent.onrender.com/escalations |
+| Analyze API | https://applesupport-ai-agent.onrender.com/api/analyze |
+| History API | https://applesupport-ai-agent.onrender.com/api/history |
+| Metrics API | https://applesupport-ai-agent.onrender.com/api/metrics |
+| Escalations API | https://applesupport-ai-agent.onrender.com/api/escalations |
+| GitHub repository | https://github.com/gamepatt78/applesupport-ai-agent |
+| Report PDF | [AppleSupport_AI_Agent_Report.pdf](AppleSupport_AI_Agent_Report.pdf) |
+
 ## What the agent does
 
 1. Receives a customer-support message.
