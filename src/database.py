@@ -59,6 +59,15 @@ def initialize_database() -> None:
             )
             """
         )
+        if DATABASE_URL:
+            connection.execute("ALTER TABLE support_interactions ADD COLUMN IF NOT EXISTS draft_reply TEXT NOT NULL DEFAULT ''")
+            connection.execute("ALTER TABLE support_interactions ADD COLUMN IF NOT EXISTS created_at TEXT NOT NULL DEFAULT ''")
+        else:
+            existing_columns = {row[1] for row in connection.execute("PRAGMA table_info(support_interactions)").fetchall()}
+            if "draft_reply" not in existing_columns:
+                connection.execute("ALTER TABLE support_interactions ADD COLUMN draft_reply TEXT NOT NULL DEFAULT ''")
+            if "created_at" not in existing_columns:
+                connection.execute("ALTER TABLE support_interactions ADD COLUMN created_at TEXT NOT NULL DEFAULT ''")
 
 
 def _rows(cursor: Any) -> list[dict]:
