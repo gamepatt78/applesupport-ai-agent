@@ -96,7 +96,7 @@ Expected action: Auto-handle basic coverage information; escalate safety issues 
 60. Can I change the delivery date?
 
 Expected intent: `order_delivery`
-Expected action: Auto-handle routine tracking; escalate missing or disputed deliveries.
+Expected action: Give the customer the order-tracking next step and direct them to Apple order status; escalate missing, stolen, or disputed deliveries.
 
 ## Store Support
 

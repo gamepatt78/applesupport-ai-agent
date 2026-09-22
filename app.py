@@ -32,7 +32,7 @@ def draft_reply(intent: str, escalate: bool) -> str:
         "billing_refund": "Hi there, please check your purchase history and reply with the date and amount of the charge. For your security, do not share full payment details here.",
         "device_setup": "Hi there, we can help with setup. Please check that your device is connected to Wi-Fi and updated to the latest iOS version, then try the setup steps again.",
         "repair_warranty": "Hi there, please check your coverage at checkcoverage.apple.com, then choose an Apple Store or Apple Authorized Service Provider for an inspection.",
-        "order_delivery": "Hi there, please check your order confirmation for the latest tracking link. Reply with your order number if the delivery status has not updated.",
+        "order_delivery": "Hi there, please check your order status at https://www.apple.com/shop/order/list for the latest tracking details. Reply with your order number if the delivery status has not updated, and we can help with the next step.",
         "store_support": "Hi there, you can find the nearest Apple Store and available appointments at apple.com/retail. Reply here if you need help finding a location.",
         "software_troubleshooting": "Hi there, please check Settings for the relevant device status and make sure your iPhone is updated to the latest iOS version. If the issue continues, reply here and we will take a closer look.",
     }
