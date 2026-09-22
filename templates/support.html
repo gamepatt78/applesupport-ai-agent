@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apple Support | Help with your device</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/support.css">
+</head>
+<body>
+  <nav class="support-nav">
+    <a class="apple-wordmark" href="/support" aria-label="Support home">Support</a>
+    <div class="nav-links"><a href="#products">Products</a><a href="#topics">Topics</a><a href="#stores">Find a store</a></div>
+    <a class="nav-button" href="/">Agent view</a>
+  </nav>
+
+  <main>
+    <section class="hero-section">
+      <p class="kicker">AppleSupport AI assistant</p>
+      <h1>How can we help?</h1>
+      <p class="hero-copy">Tell us what is happening. We will point you to the clearest next step.</p>
+      <form class="support-search" id="support-form">
+        <span class="search-icon">⌕</span>
+        <input id="support-message" type="search" placeholder="Describe your issue, like “my iPhone is not charging”" autocomplete="off">
+        <button type="submit">Search</button>
+      </form>
+      <div class="quick-links"><span>Popular:</span><button data-question="My Apple ID is locked">Apple ID</button><button data-question="My iPhone battery is draining quickly">Battery</button><button data-question="I need to repair my iPhone screen">Repairs</button></div>
+    </section>
+
+    <section class="result-section" id="result-section" hidden>
+      <div class="result-top"><div><p class="kicker">Personalized guidance</p><h2 id="result-title">Here is the best next step</h2></div><button class="close-result" id="close-result" aria-label="Close result">×</button></div>
+      <div class="answer-grid">
+        <article class="answer-main"><span class="answer-label">We understand this as</span><h3 id="result-intent">Software troubleshooting</h3><p id="result-reason">We found a routine support path for your issue.</p><div class="draft-answer" id="result-reply"></div></article>
+        <aside class="next-card"><span class="answer-label">Recommended next step</span><div class="next-icon" id="next-icon">✓</div><h3 id="result-action">Try these steps</h3><p id="result-action-copy">Start with self-service support. If the issue continues, an Apple specialist can help.</p><div class="next-buttons"><a id="support-link" href="https://support.apple.com/" target="_blank" rel="noreferrer">Apple Support ↗</a><a class="store-link" href="https://www.apple.com/retail/" target="_blank" rel="noreferrer">Find a store ↗</a></div></aside>
+      </div>
+    </section>
+
+    <section class="products-section" id="products"><div class="section-heading"><p class="kicker">Get support for</p><h2>Your Apple products</h2></div><div class="product-grid"><button class="product-card" data-question="My iPhone is not working"><span class="product-icon phone">▯</span><strong>iPhone</strong><span>Explore support</span></button><button class="product-card" data-question="My Mac has an error"><span class="product-icon mac">▱</span><strong>Mac</strong><span>Explore support</span></button><button class="product-card" data-question="My iPad will not update"><span class="product-icon tablet">▯</span><strong>iPad</strong><span>Explore support</span></button><button class="product-card" data-question="My AirPods are not connecting"><span class="product-icon pods">◉</span><strong>AirPods</strong><span>Explore support</span></button></div></section>
+
+    <section class="topics-section" id="topics"><div class="section-heading"><p class="kicker">Quick help</p><h2>Support topics</h2></div><div class="topic-grid"><a href="https://support.apple.com/apple-id" target="_blank" rel="noreferrer"><span>◉</span>Apple ID and password <b>›</b></a><a href="https://support.apple.com/repair" target="_blank" rel="noreferrer"><span>⌁</span>Repairs and service <b>›</b></a><a href="https://support.apple.com/billing" target="_blank" rel="noreferrer"><span>◇</span>Billing and subscriptions <b>›</b></a><a href="https://support.apple.com/contact" target="_blank" rel="noreferrer"><span>↗</span>Contact Apple Support <b>›</b></a></div></section>
+
+    <section class="store-section" id="stores"><div><p class="kicker">Need a person?</p><h2>Visit an Apple Store</h2><p>Get help from a specialist, book a Genius Bar appointment, or bring in your device for service.</p><a class="dark-button" href="https://www.apple.com/retail/" target="_blank" rel="noreferrer">Find your nearest store <span>→</span></a></div><div class="store-art"><div class="store-sun"></div><div class="store-building"><i></i><i></i><i></i><i></i><i></i></div></div></section>
+  </main>
+  <footer><strong>Support</strong><span>Helpful information for AppleSupport customers</span><span>© 2026 Support assistant</span></footer>
+  <div class="toast" id="toast"></div>
+  <script src="/static/support.js"></script>
+</body>
+</html>

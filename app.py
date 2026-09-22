@@ -2,13 +2,13 @@
 
 from pathlib import Path
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, render_template, request
 
 from src.pipeline import classify_baseline, escalation_baseline
 
 
 ROOT = Path(__file__).parent
-app = Flask(__name__, static_folder=str(ROOT), static_url_path="")
+app = Flask(__name__, template_folder="templates", static_folder="static")
 
 
 def draft_reply(intent: str, escalate: bool) -> str:
@@ -31,7 +31,12 @@ def draft_reply(intent: str, escalate: bool) -> str:
 
 @app.get("/")
 def home():
-    return send_from_directory(ROOT, "index.html")
+    return render_template("index.html")
+
+
+@app.get("/support")
+def support():
+    return render_template("support.html")
 
 
 @app.get("/api/analyze")
