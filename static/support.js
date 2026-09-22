@@ -7,6 +7,8 @@ const resultReply = document.querySelector('#result-reply');
 const resultAction = document.querySelector('#result-action');
 const resultActionCopy = document.querySelector('#result-action-copy');
 const nextIcon = document.querySelector('#next-icon');
+const supportLink = document.querySelector('#support-link');
+const storeLink = document.querySelector('.store-link');
 const toast = document.querySelector('#toast');
 
 const labels = {
@@ -59,6 +61,18 @@ form.addEventListener('submit', async (event) => {
       : 'Start with self-service support. If the issue continues, an Apple specialist can help.';
     nextIcon.textContent = escalated ? '!' : '✓';
     nextIcon.classList.toggle('warn', escalated);
+    if (result.intent === 'account_access') {
+      supportLink.href = 'https://iforgot.apple.com/';
+      supportLink.textContent = 'Recover Apple Account ↗';
+    } else if (result.intent === 'repair_warranty') {
+      supportLink.href = 'https://support.apple.com/repair';
+      supportLink.textContent = 'Start a repair ↗';
+    } else {
+      supportLink.href = 'https://support.apple.com/';
+      supportLink.textContent = 'Apple Support ↗';
+    }
+    storeLink.href = 'https://www.apple.com/retail/';
+    storeLink.textContent = 'Visit an Apple Store ↗';
     resultSection.hidden = false;
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (error) {
