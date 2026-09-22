@@ -103,11 +103,34 @@ def save_interaction(
 def list_interactions(limit: int = 50) -> list[dict]:
     bounded_limit = max(1, min(int(limit), 200))
     with get_connection() as connection:
-        cursor = connection.execute(
-            f"""SELECT id, customer_message, intent, escalated, escalation_reason, draft_reply, created_at
-            FROM support_interactions ORDER BY id DESC LIMIT {_placeholder()}""",
-            (bounded_limit,),
-        )
+        if DATABASE_URL:
+            column_cursor = connection.execute(
+                "SELECT column_name FROM information_schema.columns WHERE table_name = %s",
+                ("support_interactions",),
+            )
+            columns = {row[0] for row in column_cursor.fetchall()}
+            selected = [
+                column if column in columns else "'' AS " + column
+                for column in [
+                    "id",
+                    "customer_message",
+                    "intent",
+                    "escalated",
+                    "escalation_reason",
+                    "draft_reply",
+                    "created_at",
+                ]
+            ]
+            cursor = connection.execute(
+                f"SELECT {', '.join(selected)} FROM support_interactions ORDER BY id DESC LIMIT %s",
+                (bounded_limit,),
+            )
+        else:
+            cursor = connection.execute(
+                """SELECT id, customer_message, intent, escalated, escalation_reason, draft_reply, created_at
+                FROM support_interactions ORDER BY id DESC LIMIT ?""",
+                (bounded_limit,),
+            )
         return _rows(cursor)
 
 
