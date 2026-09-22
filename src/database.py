@@ -105,7 +105,7 @@ def list_interactions(limit: int = 50) -> list[dict]:
     with get_connection() as connection:
         cursor = connection.execute(
             f"""SELECT id, customer_message, intent, escalated, escalation_reason, draft_reply, created_at
-            FROM support_interactions ORDER BY id DESC LIMIT {placeholder}""".replace("{placeholder}", _placeholder()),
+            FROM support_interactions ORDER BY id DESC LIMIT {_placeholder()}""",
             (bounded_limit,),
         )
         return _rows(cursor)
